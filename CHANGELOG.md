@@ -1,5 +1,11 @@
 # ai-url-query
 
+## 1.3.0
+
+### Minor Changes
+
+- d5ae634: Remove example code. Include reference to example repo in readme
+
 ## 1.2.0
 
 ### Minor Changes
