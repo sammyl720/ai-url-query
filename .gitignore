@@ -1,0 +1,4 @@
+node_modules
+dist
+dotenv
+vectra_index
