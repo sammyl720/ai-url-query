@@ -81,89 +81,7 @@ The CLI example demonstrates how to:
 3. Segment the content and store embeddings.
 4. Accept a natural language question from the user and retrieve an answer based on the URL’s content.
 
-```typescript
-import readline from 'readline';
-import { OpenAI } from 'openai';
-import dotenv from 'dotenv';
-import { ContentSegmentationAgent } from '../agents/content-segmentation.js';
-import { VectraDatabase } from '../database/vector/vector-database.js';
-import { ContentProcessor } from '../content-processor.js';
-import { EmbeddingsGenerator } from '../tools/embedding-generator.js';
-import { QueryURLTool } from '../tools/query-url.js';
-import { INDEX_PATH } from '../helpers.js';
-import {
-  IContentChunker,
-  IContentProcessor,
-  IEmbeddingsGenerator,
-  IVectorDatabase,
-} from '../types.js';
-
-// Load environment variables from .env file
-dotenv.config();
-
-export async function main() {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-
-  // Create an instance of the content segmentation agent.
-  const textSegmentationAgent: IContentChunker = new ContentSegmentationAgent(
-    openai,
-  );
-
-  // Wrap OpenAI embeddings API.
-  const embeddingsGenerator: IEmbeddingsGenerator = new EmbeddingsGenerator(
-    openai,
-  );
-
-  // Initialize the vector database using vectra.
-  const vectorDatabase: IVectorDatabase = await VectraDatabase.From(INDEX_PATH);
-
-  // Initialize the content processor that handles fetching, segmentation, and storage of embeddings.
-  const contentProcessor: IContentProcessor = new ContentProcessor(
-    embeddingsGenerator,
-    textSegmentationAgent,
-    vectorDatabase,
-  );
-
-  // Create the high-level URL query tool.
-  const queryUrlTool = new QueryURLTool(contentProcessor, openai);
-
-  // Set up terminal input using readline.
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  // Promisify question asking.
-  const askQuestion = (query: string): Promise<string> =>
-    new Promise((resolve) => rl.question(query, resolve));
-
-  try {
-    // Prompt the user for a URL and a question.
-    const url = await askQuestion('Enter URL: ');
-    const question = await askQuestion(
-      'Enter your question about the URL content: ',
-    );
-    const answer = await queryUrlTool.queryUrl(url, question);
-
-    console.log('\nAnswer:');
-    console.log(answer);
-  } catch (err) {
-    console.error('An error occurred:', err);
-  } finally {
-    rl.close();
-  }
-}
-```
-
-To run the CLI example, execute:
-
-```bash
-ts-node src/examples/cli.ts
-```
-
-_(Make sure you have `ts-node` installed either globally or as a dev dependency.)_
+Checkout the cli example [here](https://github.com/sammyl720/ai-url-query-cli-example/blob/master/README.md).
 
 ## Project Structure
 
@@ -174,8 +92,6 @@ _(Make sure you have `ts-node` installed either globally or as a dev dependency.
 │   ├── database
 │   │   └── vector
 │   │       └── vector-database.ts       # Implements vector database using vectra
-│   ├── examples
-│   │   └── cli.ts                     # CLI example demonstrating the library usage
 │   ├── tools
 │   │   ├── embedding-generator.ts      # OpenAI embeddings wrapper
 │   │   └── query-url.ts                # Tool to query URLs using the processed content
