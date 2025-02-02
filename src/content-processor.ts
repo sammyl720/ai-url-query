@@ -1,10 +1,10 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { IEmbeddingsGenerator } from "./embedding-generator.js";
-import { IContentChunker } from "../types.js";
-import { IVectorDatabase } from "../types.js";
-import { IContentProcessor } from "../types.js";
-import { TOP_K_RESULTS } from "../consts.js";
+import { IEmbeddingsGenerator } from "./types.js";
+import { IContentChunker } from "./types.js";
+import { IVectorDatabase } from "./types.js";
+import { IContentProcessor } from "./types.js";
+import { TOP_K_RESULTS } from "./consts.js";
 
 export class ContentProcessor implements IContentProcessor {
   constructor(

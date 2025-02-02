@@ -5,9 +5,9 @@ import { OpenAI } from "openai";
 import dotenv from "dotenv";
 import { ContentSegmentationAgent } from "./agents/content-segmentation.js";
 import { VectraDatabase } from "./database/vector/vector-database.js";
-import { ContentAnalysisAssistant } from "./agents/content-query.js";
-import { ContentProcessor } from "./tools/content-processor.js";
+import { ContentProcessor } from "./content-processor.js";
 import { EmbeddingsGenerator } from "./tools/embedding-generator.js";
+import { QueryURLTool } from "./tools/query-url.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -29,6 +29,7 @@ async function main() {
     textSegmentationAgent,
     vectorDatabase
   );
+  const queryUrlTool = new QueryURLTool(contentProcessor, openai);
 
   // Set up terminal input using readline
   const rl = readline.createInterface({
@@ -46,26 +47,8 @@ async function main() {
     const question = await askQuestion(
       "Enter your question about the URL content: "
     );
+    const answer = await queryUrlTool.queryUrl(url, question);
 
-    await contentProcessor.StoreUrlContentEmbeddings(url);
-
-    // Retrieve the top matching chunks based on the user query
-    const relevantItems = await contentProcessor.RetrieveRevelantMatches(
-      question
-    );
-
-    if (relevantItems.length === 0) {
-      console.log("No relevant context found.");
-      rl.close();
-      return;
-    }
-
-    // Combine the retrieved text chunks into one context string
-    const context = relevantItems.join("\n---\n");
-
-    const assistant = new ContentAnalysisAssistant(openai);
-
-    const answer = await assistant.Ask(question, context);
     console.log("\nAnswer:");
     console.log(answer);
   } catch (err) {

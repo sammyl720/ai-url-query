@@ -70,4 +70,13 @@ export class ContentAnalysisAssistant {
         </context>`,
     });
   }
+
+  static AskAssistant(
+    openai: OpenAI,
+    question: string,
+    context: string
+  ): Promise<string> {
+    const assistant = new ContentAnalysisAssistant(openai);
+    return assistant.Ask(context, question);
+  }
 }
