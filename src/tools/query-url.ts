@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import type {
   CompletionMessageToolCall,
+  IAssistant,
   IContentProcessor,
   IToolResultMessage,
 } from '../types.js';
@@ -14,13 +15,18 @@ const queryUrlParameters = z.object({
   url: z.string(),
 });
 
-export class QueryURLTool extends BaseTool {
+export class QueryURLTool extends BaseTool implements IAssistant {
   constructor(
     private contentProcessor: IContentProcessor,
     private openai: OpenAI,
   ) {
     super('query_url_content');
   }
+
+  async Ask(url: string, query: string): Promise<string> {
+    return this.queryUrl(url, query);
+  }
+
   toolDefinition = createToolDefinition(
     super.name,
     'Ask a question about the content of the provided web url to retrieve an informed answer',

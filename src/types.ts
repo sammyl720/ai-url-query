@@ -1,3 +1,4 @@
+import type OpenAI from 'openai';
 import type { ChatCompletionMessageToolCall } from 'openai/resources/chat/completions.js';
 
 export interface IContentProcessor {
@@ -113,4 +114,29 @@ export interface IToolHandler {
 
 export interface IEmbeddingsGenerator {
   getEmbeddings(input: string): Promise<number[]>;
+}
+
+/** An ai assistant that can answer questions about the content of web page urls. */
+export interface IAssistant {
+  /**
+   * Generate a procise answer to a query using the content of the provided webpage.
+   * @param url The url for the webpage
+   * @param query The question about the provided web page
+   *
+   * @returns An informed answer to the query
+   */
+  Ask(url: string, query: string): Promise<string>;
+}
+
+export interface IUrlQueryToolSet {
+  vectorDatabase: IVectorDatabase;
+  contentChunker: IContentChunker;
+  embeddingsGenerator: IEmbeddingsGenerator;
+  processor: IContentProcessor;
+  assistant: IAssistant;
+  openai: OpenAI;
+}
+
+export interface IUrlQueryFactory {
+  Create(): Promise<IUrlQueryToolSet>;
 }
