@@ -221,7 +221,3 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 If you have any questions about the content or functionality of this library, feel free to open an issue or reach out. Happy coding!
-
----
-
-Feel free to modify this README as your project evolves or to better fit your documentation style.

@@ -15,7 +15,7 @@ export class ContentProcessor implements IContentProcessor {
 
   async StoreUrlContentEmbeddings(url: string, force = false) {
     if (!force && (await this.vectorDatabase.has(url))) {
-      console.log(
+      console.warn(
         `Database already contains embeddings for provided url. Skipping url embeddings. To embed the content anyways provide set 'force' to 'true'. `
       );
       return;
