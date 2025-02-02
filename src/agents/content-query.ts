@@ -1,6 +1,6 @@
-import OpenAI from "openai";
-import { OPENAI_MODEL_COMPLETION } from "../consts.js";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import OpenAI from 'openai';
+import { OPENAI_MODEL_COMPLETION } from '../consts.js';
+import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 const SYSTEM_PROMPT = `
 You are a highly knowledgeable assistant whose task is to provide clear, comprehensive, and well-informed answers based on a provided context. The relevant information is delivered in a string wrapped in <context> and </context> tags. Follow these guidelines:
@@ -27,14 +27,14 @@ By following these instructions, you will generate responses that are well-infor
 export class ContentAnalysisAssistant {
   private messages: ChatCompletionMessageParam[] = [
     {
-      role: "system",
+      role: 'system',
       content: SYSTEM_PROMPT,
     },
   ];
 
   constructor(
     private openai: OpenAI,
-    private model = OPENAI_MODEL_COMPLETION
+    private model = OPENAI_MODEL_COMPLETION,
   ) {}
 
   async Ask(context: string, question: string): Promise<any> {
@@ -51,19 +51,19 @@ export class ContentAnalysisAssistant {
       model: this.model,
     });
 
-    return response.choices[0].message;
+    return response.choices[0]!.message;
   }
 
   private addUserMessage(content: string) {
     this.messages.push({
-      role: "user",
+      role: 'user',
       content,
     });
   }
 
   private addContextMessage(context: string) {
     this.messages.push({
-      role: "system",
+      role: 'system',
       content: `
         <context>
             ${context}
@@ -74,7 +74,7 @@ export class ContentAnalysisAssistant {
   static AskAssistant(
     openai: OpenAI,
     question: string,
-    context: string
+    context: string,
   ): Promise<string> {
     const assistant = new ContentAnalysisAssistant(openai);
     return assistant.Ask(context, question);

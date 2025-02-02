@@ -1,6 +1,6 @@
-import { LocalIndex } from "vectra";
-import { TOP_K_RESULTS } from "../../consts.js";
-import { EmbeddingEntry, IVectorDatabase } from "../../types.js";
+import { LocalIndex } from 'vectra';
+import { TOP_K_RESULTS } from '../../consts.js';
+import type { EmbeddingEntry, IVectorDatabase } from '../../types.js';
 
 export class VectraDatabase implements IVectorDatabase {
   private constructor(private index: LocalIndex) {}
@@ -13,7 +13,7 @@ export class VectraDatabase implements IVectorDatabase {
   static async From(INDEX_PATH: string) {
     const index = new LocalIndex(INDEX_PATH);
     if (!(await index.isIndexCreated())) {
-      console.log("Creating new Vectra index...");
+      console.log('Creating new Vectra index...');
       await index.createIndex();
     }
 
@@ -26,12 +26,12 @@ export class VectraDatabase implements IVectorDatabase {
 
   async query(
     vector: number[],
-    numberOfResults: number = TOP_K_RESULTS
+    numberOfResults: number = TOP_K_RESULTS,
   ): Promise<EmbeddingEntry[]> {
     const results = await this.index.queryItems(vector, numberOfResults);
     return results.map(
       ({ item: { vector, metadata } }) =>
-        ({ vector, metadata } as EmbeddingEntry)
+        ({ vector, metadata }) as EmbeddingEntry,
     );
   }
 

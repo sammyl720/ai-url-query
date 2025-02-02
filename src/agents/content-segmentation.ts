@@ -1,13 +1,13 @@
-import OpenAI from "openai";
-import { OPENAI_MODEL_COMPLETION } from "../consts.js";
-import { z } from "zod";
-import { IContentChunker } from "../types.js";
+import OpenAI from 'openai';
+import { OPENAI_MODEL_COMPLETION } from '../consts.js';
+import { z } from 'zod';
+import type { IContentChunker } from '../types.js';
 
 const chunksParser = z.object({
   chunks: z.string().array(),
 });
 
-const toolFunctionName = "save_content_chunks";
+const toolFunctionName = 'save_content_chunks';
 
 const systemPrompt = `
 You are a text segmentation agent whose sole purpose is to process the complete text content of a web page and divide it into chunks that are optimized for embedding generation. Follow these instructions:
@@ -45,34 +45,34 @@ export class ContentSegmentationAgent implements IContentChunker {
       model: OPENAI_MODEL_COMPLETION,
       messages: [
         {
-          role: "system",
+          role: 'system',
           content: systemPrompt,
         },
         {
-          role: "developer",
+          role: 'developer',
           content: `Please segment the content below and call the \`${toolFunctionName}\` function with the result
           \n\n${content}`,
         },
       ],
-      tool_choice: "required",
+      tool_choice: 'required',
       tools: [
         {
-          type: "function",
+          type: 'function',
           function: {
             name: toolFunctionName,
-            description: "Save content chunks.",
+            description: 'Save content chunks.',
             strict: true,
             parameters: {
-              type: "object",
-              required: ["chunks"],
+              type: 'object',
+              required: ['chunks'],
               properties: {
                 chunks: {
-                  type: "array",
+                  type: 'array',
                   description:
-                    "Array of strings representing content chunks that are suitable embeddings",
+                    'Array of strings representing content chunks that are suitable embeddings',
                   items: {
-                    type: "string",
-                    description: "Content chunk",
+                    type: 'string',
+                    description: 'Content chunk',
                   },
                 },
               },
@@ -89,17 +89,20 @@ export class ContentSegmentationAgent implements IContentChunker {
   processResult(
     result: OpenAI.Chat.Completions.ChatCompletion & {
       _request_id?: string | null;
-    }
+    },
   ) {
-    const toolCalls = result.choices[0].message.tool_calls;
+    const toolCalls = result.choices[0]!.message.tool_calls;
 
-    if (!toolCalls?.length || toolCalls[0].function.name !== toolFunctionName) {
-      console.log(`Message: ${result.choices[0].message.content}`);
+    if (
+      !toolCalls?.length ||
+      toolCalls[0]!.function.name !== toolFunctionName
+    ) {
+      console.log(`Message: ${result.choices[0]!.message.content}`);
       throw new Error(`Could not chunk content.`);
     }
 
     const { chunks } = chunksParser.parse(
-      JSON.parse(toolCalls[0].function.arguments)
+      JSON.parse(toolCalls[0]!.function.arguments),
     );
     return chunks;
   }

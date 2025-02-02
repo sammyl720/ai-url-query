@@ -1,4 +1,4 @@
-import { ChatCompletionMessageToolCall } from "openai/resources/chat/completions.js";
+import type { ChatCompletionMessageToolCall } from 'openai/resources/chat/completions.js';
 
 export interface IContentProcessor {
   /**
@@ -16,7 +16,7 @@ export interface IContentProcessor {
    */
   RetrieveRevelantMatches(
     query: string,
-    numberOfResults?: number
+    numberOfResults?: number,
   ): Promise<string[]>;
 }
 export interface IContentChunker {
@@ -51,7 +51,7 @@ export interface IToolProperties extends Record<string, IToolProperty> {}
  * Represents the JSON schema–like parameters for a function.
  */
 export interface IFunctionParameters {
-  type: "object";
+  type: 'object';
   properties: IToolProperties;
   required?: string[];
   additionalProperties?: boolean; // typically set to false in strict mode
@@ -69,7 +69,7 @@ export interface IFunctionDefinition {
 }
 
 export interface IToolDefinition {
-  type: "function";
+  type: 'function';
   function: IFunctionDefinition;
 }
 
@@ -79,7 +79,7 @@ export type CompletionMessageToolCall = ChatCompletionMessageToolCall;
  * This is the message you send back to OpenAI after executing a tool.
  */
 export interface IToolResultMessage {
-  role: "tool";
+  role: 'tool';
   tool_call_id: string;
   content: string; // can be a JSON string, plain text, or other stringified result
 }
@@ -102,7 +102,7 @@ export interface ITool extends IToolHandler {
    * @returns A promise that resolves with a valid tool result message.
    */
   handler: (
-    tool_call: CompletionMessageToolCall
+    tool_call: CompletionMessageToolCall,
   ) => Promise<IToolResultMessage>;
 }
 

@@ -1,4 +1,4 @@
-import { IToolDefinition, IToolProperties } from "../types.js";
+import type { IToolDefinition, IToolProperties } from '../types.js';
 
 export function createToolDefinition(
   name: string,
@@ -6,18 +6,18 @@ export function createToolDefinition(
   properties: IToolProperties,
   strict = true,
   additionalProperties = false,
-  optionalPropertiesList: string[] = []
+  optionalPropertiesList: string[] = [],
 ): IToolDefinition {
   return {
-    type: "function",
+    type: 'function',
     function: {
       name,
       description,
       parameters: {
-        type: "object",
+        type: 'object',
         properties,
         required: Object.keys(properties).filter((key) =>
-          optionalPropertiesList.includes(key)
+          optionalPropertiesList.includes(key),
         ),
         additionalProperties,
       },

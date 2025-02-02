@@ -1,17 +1,16 @@
-import {
+import type {
   CompletionMessageToolCall,
   ITool,
   IToolDefinition,
-  IToolHandler,
   IToolResultMessage,
-} from "../types.js";
+} from '../types.js';
 
 export abstract class BaseTool implements ITool {
   constructor(public readonly name: string) {}
 
   abstract toolDefinition: IToolDefinition;
   abstract handler(
-    tool_call: CompletionMessageToolCall
+    tool_call: CompletionMessageToolCall,
   ): Promise<IToolResultMessage>;
 
   isToolHandler(tool_call: CompletionMessageToolCall): boolean {

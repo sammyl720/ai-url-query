@@ -1,18 +1,18 @@
-import readline from "readline";
-import { OpenAI } from "openai";
-import dotenv from "dotenv";
-import { ContentSegmentationAgent } from "../agents/content-segmentation.js";
-import { VectraDatabase } from "../database/vector/vector-database.js";
-import { ContentProcessor } from "../content-processor.js";
-import { EmbeddingsGenerator } from "../tools/embedding-generator.js";
-import { QueryURLTool } from "../tools/query-url.js";
-import { INDEX_PATH } from "../helpers.js";
-import {
+import readline from 'readline';
+import { OpenAI } from 'openai';
+import dotenv from 'dotenv';
+import { ContentSegmentationAgent } from '../agents/content-segmentation.js';
+import { VectraDatabase } from '../database/vector/vector-database.js';
+import { ContentProcessor } from '../content-processor.js';
+import { EmbeddingsGenerator } from '../tools/embedding-generator.js';
+import { QueryURLTool } from '../tools/query-url.js';
+import { INDEX_PATH } from '../helpers.js';
+import type {
   IContentChunker,
   IContentProcessor,
   IEmbeddingsGenerator,
   IVectorDatabase,
-} from "../types.js";
+} from '../types.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -27,12 +27,12 @@ export async function main() {
 
   /** A `IContentChunker` implementation that uses openai chat completions api to split long text content in to smaller chunks suitable for embeddings */
   const textSegmentationAgent: IContentChunker = new ContentSegmentationAgent(
-    openai
+    openai,
   );
 
   /** A simple wrapper of openai embeddings api to retrieve embeddings using the `text-embedding-3-small` model */
   const embeddingsGenerator: IEmbeddingsGenerator = new EmbeddingsGenerator(
-    openai
+    openai,
   );
 
   // create a simple wrapper of `vectra`' LocalIndex that implements a `IVectorDatabase` for our database to store embeddings
@@ -42,7 +42,7 @@ export async function main() {
   const contentProcessor: IContentProcessor = new ContentProcessor(
     embeddingsGenerator,
     textSegmentationAgent,
-    vectorDatabase
+    vectorDatabase,
   );
 
   /** A high level tool that can be used in any ui to ask question about provided urls. */
@@ -60,16 +60,16 @@ export async function main() {
 
   try {
     // Get URL and question from the user
-    const url = await askQuestion("Enter URL: ");
+    const url = await askQuestion('Enter URL: ');
     const question = await askQuestion(
-      "Enter your question about the URL content: "
+      'Enter your question about the URL content: ',
     );
     const answer = await queryUrlTool.queryUrl(url, question);
 
-    console.log("\nAnswer:");
+    console.log('\nAnswer:');
     console.log(answer);
   } catch (err) {
-    console.error("An error occurred:", err);
+    console.error('An error occurred:', err);
   } finally {
     rl.close();
   }

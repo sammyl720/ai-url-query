@@ -82,21 +82,21 @@ The CLI example demonstrates how to:
 4. Accept a natural language question from the user and retrieve an answer based on the URL’s content.
 
 ```typescript
-import readline from "readline";
-import { OpenAI } from "openai";
-import dotenv from "dotenv";
-import { ContentSegmentationAgent } from "../agents/content-segmentation.js";
-import { VectraDatabase } from "../database/vector/vector-database.js";
-import { ContentProcessor } from "../content-processor.js";
-import { EmbeddingsGenerator } from "../tools/embedding-generator.js";
-import { QueryURLTool } from "../tools/query-url.js";
-import { INDEX_PATH } from "../helpers.js";
+import readline from 'readline';
+import { OpenAI } from 'openai';
+import dotenv from 'dotenv';
+import { ContentSegmentationAgent } from '../agents/content-segmentation.js';
+import { VectraDatabase } from '../database/vector/vector-database.js';
+import { ContentProcessor } from '../content-processor.js';
+import { EmbeddingsGenerator } from '../tools/embedding-generator.js';
+import { QueryURLTool } from '../tools/query-url.js';
+import { INDEX_PATH } from '../helpers.js';
 import {
   IContentChunker,
   IContentProcessor,
   IEmbeddingsGenerator,
   IVectorDatabase,
-} from "../types.js";
+} from '../types.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -107,10 +107,14 @@ export async function main() {
   });
 
   // Create an instance of the content segmentation agent.
-  const textSegmentationAgent: IContentChunker = new ContentSegmentationAgent(openai);
+  const textSegmentationAgent: IContentChunker = new ContentSegmentationAgent(
+    openai,
+  );
 
   // Wrap OpenAI embeddings API.
-  const embeddingsGenerator: IEmbeddingsGenerator = new EmbeddingsGenerator(openai);
+  const embeddingsGenerator: IEmbeddingsGenerator = new EmbeddingsGenerator(
+    openai,
+  );
 
   // Initialize the vector database using vectra.
   const vectorDatabase: IVectorDatabase = await VectraDatabase.From(INDEX_PATH);
@@ -119,7 +123,7 @@ export async function main() {
   const contentProcessor: IContentProcessor = new ContentProcessor(
     embeddingsGenerator,
     textSegmentationAgent,
-    vectorDatabase
+    vectorDatabase,
   );
 
   // Create the high-level URL query tool.
@@ -137,14 +141,16 @@ export async function main() {
 
   try {
     // Prompt the user for a URL and a question.
-    const url = await askQuestion("Enter URL: ");
-    const question = await askQuestion("Enter your question about the URL content: ");
+    const url = await askQuestion('Enter URL: ');
+    const question = await askQuestion(
+      'Enter your question about the URL content: ',
+    );
     const answer = await queryUrlTool.queryUrl(url, question);
 
-    console.log("\nAnswer:");
+    console.log('\nAnswer:');
     console.log(answer);
   } catch (err) {
-    console.error("An error occurred:", err);
+    console.error('An error occurred:', err);
   } finally {
     rl.close();
   }
@@ -157,7 +163,7 @@ To run the CLI example, execute:
 ts-node src/examples/cli.ts
 ```
 
-*(Make sure you have `ts-node` installed either globally or as a dev dependency.)*
+_(Make sure you have `ts-node` installed either globally or as a dev dependency.)_
 
 ## Project Structure
 

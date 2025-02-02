@@ -1,17 +1,17 @@
-import OpenAI from "openai";
-import { OPENAI_MODEL_EMBEDDING } from "../consts.js";
-import {
+import OpenAI from 'openai';
+import { OPENAI_MODEL_EMBEDDING } from '../consts.js';
+import type {
   CompletionMessageToolCall,
   IEmbeddingsGenerator,
   ITool,
   IToolResultMessage,
-} from "../types.js";
-import { createToolDefinition } from "./helpers.js";
-import z from "zod";
-import { BaseTool } from "./base-tool.js";
+} from '../types.js';
+import { createToolDefinition } from './helpers.js';
+import z from 'zod';
+import { BaseTool } from './base-tool.js';
 
 const getEmbeddingsParameters = z.object({
-  input: z.string().describe("The input text to generate embeddings for."),
+  input: z.string().describe('The input text to generate embeddings for.'),
 });
 
 export class EmbeddingsGenerator
@@ -20,24 +20,24 @@ export class EmbeddingsGenerator
 {
   toolDefinition = createToolDefinition(
     this.name,
-    "Generate vector embeddings for the provided input",
+    'Generate vector embeddings for the provided input',
     {
       input: {
-        type: "string",
-        description: "The input text to generate embeddings for.",
+        type: 'string',
+        description: 'The input text to generate embeddings for.',
       },
-    }
+    },
   );
 
   constructor(
     private openai: OpenAI,
-    private embeddingsModel = OPENAI_MODEL_EMBEDDING
+    private embeddingsModel = OPENAI_MODEL_EMBEDDING,
   ) {
-    super("get_embeddings");
+    super('get_embeddings');
   }
 
   async handler(
-    tool_call: CompletionMessageToolCall
+    tool_call: CompletionMessageToolCall,
   ): Promise<IToolResultMessage> {
     const {
       id,
@@ -45,8 +45,8 @@ export class EmbeddingsGenerator
     } = tool_call;
     const result: IToolResultMessage = {
       tool_call_id: id,
-      role: "tool",
-      content: "Could not process request.",
+      role: 'tool',
+      content: 'Could not process request.',
     };
 
     try {
@@ -67,9 +67,9 @@ export class EmbeddingsGenerator
         input,
       });
       // OpenAI returns an array; we take the first embedding.
-      return response.data[0].embedding;
+      return response.data[0]!.embedding;
     } catch (err) {
-      console.error("Error getting embedding from OpenAI:", err);
+      console.error('Error getting embedding from OpenAI:', err);
       throw err;
     }
   }
