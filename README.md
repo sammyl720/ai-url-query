@@ -36,8 +36,8 @@
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/sammyl720/ai-agents.git
-   cd ai-agents
+   git clone https://github.com/sammyl720/ai-url-query.git
+   cd ai-url-query
    ```
 
 2. **Install Dependencies:**
